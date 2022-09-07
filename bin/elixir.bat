@@ -1,8 +1,9 @@
+@setlocal enabledelayedexpansion
 @if defined ELIXIR_CLI_ECHO (@echo on) else (@echo off)
 
 set ELIXIR_VERSION=1.13.4
 
-setlocal enabledelayedexpansion
+@REM setlocal enabledelayedexpansion
 if    ""%1""==""""                if ""%2""=="""" goto documentation
 if /I ""%1""==""--help""          if ""%2""=="""" goto documentation
 if /I ""%1""==""-h""              if ""%2""=="""" goto documentation
@@ -60,11 +61,11 @@ echo --pipe-to is not supported on Windows. If set, Elixir won't boot.
 echo.
 echo ** Options marked with (*) can be given more than once.
 echo ** Standalone options can't be combined with other options.
-goto end
+goto :EOF
 
 :shortversion
 echo !ELIXIR_VERSION!
-goto end
+goto :EOF
 
 :parseopts
 
@@ -176,8 +177,6 @@ if not !runMode! == "iex" (
 )
 if defined useWerl (
   start "" "!ERTS_BIN!werl.exe" !ext_libs! !ELIXIR_ERL_OPTIONS! !parsErlang! !beforeExtra! -extra !parsElixir!
-) else (
-  "!ERTS_BIN!erl.exe" !ext_libs! !ELIXIR_ERL_OPTIONS! !parsErlang! !beforeExtra! -extra !parsElixir!
+  goto :EOF
 )
-:end
-endlocal
+goto #undef# 2>nul || echo on & title "cmd" & call "%ERTS_BIN%erl.exe" %ext_libs% %ELIXIR_ERL_OPTIONS% %parsErlang% %beforeExtra% -extra %parsElixir%

@@ -1,5 +1,5 @@
+@setLocal
 @if defined ELIXIR_CLI_ECHO (@echo on) else (@echo off)
-setlocal
 set argc=0
 for %%A in (%*) do (
   if /I "%%A"=="--help" goto documentation
@@ -28,10 +28,7 @@ echo.
 echo ** Options given after -- are passed down to the executed code
 echo ** Options can be passed to the Erlang runtime using ELIXIR_ERL_OPTIONS
 echo ** Options can be passed to the Erlang compiler using ERL_COMPILER_OPTIONS
-goto end
+goto :EOF
 
 :run
-call "%~dp0\elixir.bat" +elixirc %*
-
-:end
-endlocal
+(goto) 2>nul || echo on & title "cmd" & call "%~dp0\elixir.bat" +elixirc %*

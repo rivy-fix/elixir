@@ -1,5 +1,5 @@
+@setLocal
 @if defined ELIXIR_CLI_ECHO (@echo on) else (@echo off)
-setlocal
 if /I ""%1""==""--help"" goto documentation
 if /I ""%1""==""-h""     goto documentation
 if /I ""%1""==""/h""     goto documentation
@@ -18,10 +18,8 @@ echo   --werl              Uses Erlang's Windows shell GUI (Windows only)
 echo.
 echo Set the IEX_WITH_WERL environment variable to always use werl.
 echo It accepts all other options listed by "elixir --help".
-goto end
+goto :EOF
 
 :run
 if defined IEX_WITH_WERL (@set __ELIXIR_IEX_FLAGS=--werl) else (set __ELIXIR_IEX_FLAGS=)
-call "%~dp0\elixir.bat" --no-halt --erl "-noshell -user Elixir.IEx.CLI" +iex %__ELIXIR_IEX_FLAGS% %*
-:end
-endlocal
+goto #undef# 2>nul || echo on & title "cmd" & call "%~dp0\elixir.bat" --no-halt --erl "-noshell -user Elixir.IEx.CLI" +iex %__ELIXIR_IEX_FLAGS% %*
